@@ -1872,7 +1872,7 @@ riscv_rtx_costs (rtx x, machine_mode mode, int outer_code, int opno ATTRIBUTE_UN
     case MULT:
       if (float_mode_p)
 	*total = tune_param->fp_mul[mode == DFmode];
-      else if (!TARGET_MUL)
+      else if (!TARGET_MUL && !TARGET_ZMMUL)
 	/* Estimate the cost of a library call.  */
 	*total = COSTS_N_INSNS (speed ? 32 : 6);
       else if (GET_MODE_SIZE (mode) > UNITS_PER_WORD)
@@ -4738,8 +4738,10 @@ riscv_option_override (void)
 
   /* The presence of the M extension implies that division instructions
      are present, so include them unless explicitly disabled.  */
-  if (TARGET_MUL && (target_flags_explicit & MASK_DIV) == 0)
+  if (!TARGET_ZMMUL && TARGET_MUL && (target_flags_explicit & MASK_DIV) == 0)
     target_flags |= MASK_DIV;
+  else if(TARGET_ZMMUL && TARGET_MUL)
+    warning (0, "%<-mdiv%> cannot use when the %<ZMMUL%> extension is present");
   else if (!TARGET_MUL && TARGET_DIV)
     error ("%<-mdiv%> requires %<-march%> to subsume the %<M%> extension");
 

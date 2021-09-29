@@ -73,4 +73,7 @@ enum stack_protector_guard {
 #define TARGET_ZICSR    ((riscv_zi_subext & MASK_ZICSR) != 0)
 #define TARGET_ZIFENCEI ((riscv_zi_subext & MASK_ZIFENCEI) != 0)
 
+#define MASK_ZMMUL (1 << 0)
+#define TARGET_ZMMUL ((riscv_zmmul_subext & MASK_ZMMUL) != 0)
+
 #endif /* ! GCC_RISCV_OPTS_H */
