@@ -51,4 +51,7 @@ enum riscv_align_data {
   riscv_align_data_type_natural
 };
 
+#define MASK_ZMMUL (1 << 0)
+#define TARGET_ZMMUL ((riscv_zmmul_subext & MASK_ZMMUL) != 0)
+
 #endif /* ! GCC_RISCV_OPTS_H */
