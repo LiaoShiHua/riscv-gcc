@@ -169,7 +169,7 @@ void warn_memset_reversed_range (void)
   T1 (p, SAR (INT_MIN,  11), n11);      // { dg-warning "writing 11 or more bytes into a region of size 0" }
   /* In ILP32 the offset in the following has no range info associated
      with it.  */
-  T1 (p, SAR (INT_MIN,   1), n11);      // { dg-warning "writing 11 or more bytes into a region of size 0" "pr?????" { xfail ilp32 } }
+  T1 (p, SAR (INT_MIN,  11), n11);      // { dg-warning "writing 11 or more bytes into a region of size 0" }
   T1 (p, SAR (INT_MIN,   0), n11);      // { dg-warning "writing 11 or more bytes into a region of size 0" }
   /* Also represented as a true anti-range.  */
   T1 (p, SAR (    -12, -11), n11);      // { dg-warning "writing 11 or more bytes into a region of size \\d+" }
