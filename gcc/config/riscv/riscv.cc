@@ -2803,7 +2803,12 @@ riscv_output_move (rtx dest, rtx src)
 	  {
 	  case 1: return "lbu\t%0,%1";
 	  case 2: return "lhu\t%0,%1";
-	  case 4: return "lw\t%0,%1";
+	  case 4:{
+      if(TARGET_LWU)
+        return "lwu\t%0,%1"; 
+      
+      return "lw\t%0,%1";
+    }
 	  case 8: return "ld\t%0,%1";
 	  }
 

@@ -1417,14 +1417,30 @@
 ;;
 ;;  ....................
 
-(define_insn "extendsidi2"
+(define_expand "extendsidi2"
+  [(set (match_operand:DI 0 "register_operand")
+	(sign_extend:DI (match_operand:SI 1 "nonimmediate_operand")))]
+  "TARGET_64BIT")
+
+(define_insn "*extendsidi2_internal"
   [(set (match_operand:DI     0 "register_operand"     "=r,r")
 	(sign_extend:DI
 	    (match_operand:SI 1 "nonimmediate_operand" " r,m")))]
-  "TARGET_64BIT"
+  "TARGET_64BIT && !TARGET_LWU"
   "@
    sext.w\t%0,%1
    lw\t%0,%1"
+  [(set_attr "move_type" "move,load")
+   (set_attr "mode" "DI")])
+
+(define_insn "*extendsidi2_lwu"
+  [(set (match_operand:DI     0 "register_operand"     "=r,r")
+	(sign_extend:DI
+	    (match_operand:SI 1 "nonimmediate_operand" " r,m")))]
+  "TARGET_64BIT && TARGET_LWU"
+  "@
+   sext.w\t%0,%1
+   lwu\t%0,%1"
   [(set_attr "move_type" "move,load")
    (set_attr "mode" "DI")])
 
