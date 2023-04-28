@@ -162,7 +162,7 @@
   (const_string "unknown"))
 
 ;; Main data type used by the insn
-(define_attr "mode" "unknown,none,QI,HI,SI,DI,TI,HF,SF,DF,TF,
+(define_attr "mode" "unknown,none,QI,HI,SI,DI,TI,BF,HF,SF,DF,TF,
   VNx1BI,VNx2BI,VNx4BI,VNx8BI,VNx16BI,VNx32BI,VNx64BI,VNx128BI,
   VNx1QI,VNx2QI,VNx4QI,VNx8QI,VNx16QI,VNx32QI,VNx64QI,VNx128QI,
   VNx1HI,VNx2HI,VNx4HI,VNx8HI,VNx16HI,VNx32HI,VNx64HI,
@@ -1527,6 +1527,26 @@
   { return riscv_output_move (operands[0], operands[1]); }
   [(set_attr "move_type" "fmove,move,load,store,mtc,mfc")
    (set_attr "mode" "HF")])
+
+;; 16-bit bfloating point moves
+(define_expand "movbf"
+  [(set (match_operand:BF 0 "")
+	(match_operand:BF 1 ""))]
+  ""
+{
+  if (riscv_legitimize_move (BFmode, operands[0], operands[1]))
+    DONE;
+})
+
+
+(define_insn "*movbf_softfloat"
+  [(set (match_operand:BF 0 "nonimmediate_operand" "=f, r,r,m,*f,*r")
+	(match_operand:BF 1 "move_operand"         " f,Gr,m,r,*r,*f"))]
+  "(register_operand (operands[0], BFmode)
+    || reg_or_0_operand (operands[1], BFmode))"
+  { return riscv_output_move (operands[0], operands[1]); }
+  [(set_attr "move_type" "fmove,move,load,store,mtc,mfc")
+   (set_attr "mode" "BF")])
 
 ;;
 ;;  ....................

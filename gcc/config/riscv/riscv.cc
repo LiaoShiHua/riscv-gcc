@@ -6874,8 +6874,15 @@ static const char *
 riscv_mangle_type (const_tree type)
 {
   /* Half-precision float, _Float16 is "DF16_".  */
+  /* Bfloat, __bf16 is "DF16b" */
   if (TREE_CODE (type) == REAL_TYPE && TYPE_PRECISION (type) == 16)
-    return "DF16_";
+  {
+    if (TYPE_MODE (type) == BFmode)
+      return "DF16b"
+    else
+      return "DF16_";
+  }
+    
 
   /* Mangle all vector type for vector extension.  */
   /* The mangle name follows the rule of RVV LLVM
@@ -6896,7 +6903,7 @@ riscv_mangle_type (const_tree type)
 static bool
 riscv_scalar_mode_supported_p (scalar_mode mode)
 {
-  if (mode == HFmode)
+  if (mode == HFmode || mode == BFmode)
     return true;
   else
     return default_scalar_mode_supported_p (mode);
@@ -6908,7 +6915,7 @@ riscv_scalar_mode_supported_p (scalar_mode mode)
 static bool
 riscv_libgcc_floating_mode_supported_p (scalar_float_mode mode)
 {
-  if (mode == HFmode)
+  if (mode == HFmode || BFmode)
     return true;
   else
     return default_libgcc_floating_mode_supported_p (mode);
@@ -6962,7 +6969,7 @@ riscv_floatn_mode (int n, bool extended)
 static void
 riscv_init_libfuncs (void)
 {
-  /* Half-precision float operations.  The compiler handles all operations
+  /* Half-precision float and Bfloat operations.  The compiler handles all operations
      with NULL libfuncs by converting to SFmode.  */
 
   /* Arithmetic.  */
@@ -6972,6 +6979,12 @@ riscv_init_libfuncs (void)
   set_optab_libfunc (neg_optab, HFmode, NULL);
   set_optab_libfunc (sub_optab, HFmode, NULL);
 
+  set_optab_libfunc (add_optab, BFmode, NULL);
+  set_optab_libfunc (sdiv_optab, BFmode, NULL);
+  set_optab_libfunc (smul_optab, BFmode, NULL);
+  set_optab_libfunc (neg_optab, BFmode, NULL);
+  set_optab_libfunc (sub_optab, BFmode, NULL);
+
   /* Comparisons.  */
   set_optab_libfunc (eq_optab, HFmode, NULL);
   set_optab_libfunc (ne_optab, HFmode, NULL);
@@ -6980,6 +6993,14 @@ riscv_init_libfuncs (void)
   set_optab_libfunc (ge_optab, HFmode, NULL);
   set_optab_libfunc (gt_optab, HFmode, NULL);
   set_optab_libfunc (unord_optab, HFmode, NULL);
+
+  set_optab_libfunc (eq_optab, BFmode, NULL);
+  set_optab_libfunc (ne_optab, BFmode, NULL);
+  set_optab_libfunc (lt_optab, BFmode, NULL);
+  set_optab_libfunc (le_optab, BFmode, NULL);
+  set_optab_libfunc (ge_optab, BFmode, NULL);
+  set_optab_libfunc (gt_optab, BFmode, NULL);
+  set_optab_libfunc (unord_optab, BFmode, NULL);
 }
 
 #if CHECKING_P
