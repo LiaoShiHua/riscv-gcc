@@ -1341,6 +1341,15 @@
   [(set_attr "type" "fcvt")
    (set_attr "mode" "HF")])
 
+(define_insn "truncsfbf2"
+  [(set (match_operand:BF     0 "register_operand" "=f")
+       (float_truncate:BF
+           (match_operand:SF 1 "register_operand" " f")))]
+  "TARGET_ZFBFMIN"
+  "fcvt.bf16.s\t%0,%1"
+  [(set_attr "type" "fcvt")
+   (set_attr "mode" "BF")])
+
 (define_insn "truncdfhf2"
   [(set (match_operand:HF     0 "register_operand" "=f")
        (float_truncate:HF
@@ -1479,6 +1488,15 @@
   [(set_attr "type" "fcvt")
    (set_attr "mode" "SF")])
 
+(define_insn "extendbfsf2"
+  [(set (match_operand:SF     0 "register_operand" "=f")
+       (float_extend:SF
+           (match_operand:BF 1 "register_operand" " f")))]
+  "TARGET_ZFBFMIN"
+  "fcvt.s.bf16\t%0,%1"
+  [(set_attr "type" "fcvt")
+   (set_attr "mode" "SF")])
+
 (define_insn "extendsfdf2"
   [(set (match_operand:DF     0 "register_operand" "=f")
 	(float_extend:DF
@@ -1539,10 +1557,21 @@
 })
 
 
+(define_insn "*movhf_hardfloat"
+  [(set (match_operand:BF 0 "nonimmediate_operand" "=f,f,f,m,m,*f,*r,  *r,*r,*m")
+	(match_operand:BF 1 "move_operand"         " f,G,m,f,G,*r,*f,*G*r,*m,*r"))]
+  "TARGET_ZFBFMIN
+   && (register_operand (operands[0], BFmode)
+       || reg_or_0_operand (operands[1], BFmode))"
+  { return riscv_output_move (operands[0], operands[1]); }
+  [(set_attr "move_type" "fmove,mtc,fpload,fpstore,store,mtc,mfc,move,load,store")
+   (set_attr "mode" "BF")])
+
 (define_insn "*movbf_softfloat"
   [(set (match_operand:BF 0 "nonimmediate_operand" "=f, r,r,m,*f,*r")
 	(match_operand:BF 1 "move_operand"         " f,Gr,m,r,*r,*f"))]
-  "(register_operand (operands[0], BFmode)
+  "!TARGET_ZFBFMIN
+   && (register_operand (operands[0], BFmode)
     || reg_or_0_operand (operands[1], BFmode))"
   { return riscv_output_move (operands[0], operands[1]); }
   [(set_attr "move_type" "fmove,move,load,store,mtc,mfc")

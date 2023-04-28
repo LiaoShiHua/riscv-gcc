@@ -68,7 +68,7 @@
 			    (HF "TARGET_ZFH || TARGET_ZHINX")])
 
 ;; Iterator for floating-point modes that can be loaded into X registers.
-(define_mode_iterator SOFTF [SF (DF "TARGET_64BIT") (HF "TARGET_ZFHMIN")])
+(define_mode_iterator SOFTF [SF (DF "TARGET_64BIT") (HF "TARGET_ZFHMIN") (BF "TARGET_ZFBFMIN")])
 
 
 ;; -------------------------------------------------------------------
@@ -100,7 +100,7 @@
 (define_mode_attr reg [(SI "d") (DI "d") (CC "d")])
 
 ;; This attribute gives the format suffix for floating-point operations.
-(define_mode_attr fmt [(BF "h") (HF "h") (SF "s") (DF "d")])
+(define_mode_attr fmt [(HF "h") (SF "s") (DF "d")])
 
 ;; This attribute gives the integer suffix for floating-point conversions.
 (define_mode_attr ifmt [(SI "w") (DI "l")])
@@ -110,7 +110,7 @@
 
 ;; This attribute gives the upper-case mode name for one unit of a
 ;; floating-point mode.
-(define_mode_attr UNITMODE [(BF "BF") (HF "HF") (SF "SF") (DF "DF")])
+(define_mode_attr UNITMODE [(HF "HF") (SF "SF") (DF "DF")])
 
 ;; This attribute gives the integer mode that has half the size of
 ;; the controlling mode.
