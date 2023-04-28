@@ -1,6 +1,6 @@
 /* Software floating-point emulation.
-   Convert a 32bit unsigned integer to bfloat16.
-   Copyright (C) 2022 Free Software Foundation, Inc.
+   Convert a bfloat16 to 64bit signed integer
+   Copyright (C) 2023 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
 
    The GNU C Library is free software; you can redistribute it and/or
@@ -29,17 +29,17 @@
 #include "soft-fp.h"
 #include "brain.h"
 
-BFtype
-__floatunsibf (USItype i)
+DItype
+__fixbfdi (BFtype a)
 {
   FP_DECL_EX;
   FP_DECL_B (A);
-  BFtype a;
+  UDItype r;
 
-  FP_INIT_ROUNDMODE;
-  FP_FROM_INT_B (A, i, SI_BITS, USItype);
-  FP_PACK_RAW_B (a, A);
+  FP_INIT_EXCEPTIONS;
+  FP_UNPACK_RAW_B (A, a);
+  FP_TO_INT_B (r, A, DI_BITS, 1);
   FP_HANDLE_EXCEPTIONS;
 
-  return a;
+  return r;
 }

@@ -30,7 +30,7 @@
 #include "brain.h"
 
 BFtype
-__floatsihf (SItype i)
+__floatsibf (SItype i)
 {
   FP_DECL_EX;
   FP_DECL_B (A);
