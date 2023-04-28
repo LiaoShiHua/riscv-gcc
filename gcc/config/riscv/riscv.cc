@@ -6878,7 +6878,7 @@ riscv_mangle_type (const_tree type)
   if (TREE_CODE (type) == REAL_TYPE && TYPE_PRECISION (type) == 16)
   {
     if (TYPE_MODE (type) == BFmode)
-      return "DF16b"
+      return "DF16b";
     else
       return "DF16_";
   }
