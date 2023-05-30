@@ -1619,7 +1619,7 @@ riscv_add_offset (rtx temp, rtx reg, HOST_WIDE_INT offset)
       high = riscv_force_temporary (temp, high);
       reg = riscv_force_temporary (temp, gen_rtx_PLUS (Pmode, high, reg));
     }
-  return plus_constant (Pmode, reg, offset);
+  return plus_constant (word_mode, reg, offset);
 }
 
 /* The __tls_get_attr symbol.  */
@@ -6312,13 +6312,20 @@ riscv_output_mi_thunk (FILE *file, tree thunk_fndecl ATTRIBUTE_UNUSED,
       rtx addr;
 
       /* Set TEMP1 to *THIS_RTX.  */
-      riscv_emit_move (temp1, gen_rtx_MEM (Pmode, this_rtx));
+      if (TARGET_ILP32 && TARGET_64BIT)
+    riscv_emit_move (temp1,gen_rtx_SIGN_EXTEND (word_mode,gen_rtx_MEM (Pmode, this_rtx)));
+      else
+    riscv_emit_move (temp1, gen_rtx_MEM (Pmode, this_rtx));
 
       /* Set ADDR to a legitimate address for *THIS_RTX + VCALL_OFFSET.  */
       addr = riscv_add_offset (temp2, temp1, vcall_offset);
 
       /* Load the offset and add it to THIS_RTX.  */
-      riscv_emit_move (temp1, gen_rtx_MEM (Pmode, addr));
+      if(TARGET_ILP32 && TARGET_64BIT)
+    riscv_emit_move (temp1,gen_rtx_SIGN_EXTEND (word_mode,gen_rtx_MEM (Pmode, addr)));
+      else
+    riscv_emit_move (temp1, gen_rtx_MEM (Pmode, addr));
+
       emit_insn (gen_add3_insn (this_rtx, this_rtx, temp1));
     }
 
