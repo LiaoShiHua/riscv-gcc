@@ -6313,7 +6313,7 @@ riscv_output_mi_thunk (FILE *file, tree thunk_fndecl ATTRIBUTE_UNUSED,
 
       /* Set TEMP1 to *THIS_RTX.  */
       if (Pmode != word_mode)
-    riscv_emit_move (temp1,gen_rtx_ZERO_EXTEND (word_mode,gen_rtx_MEM (Pmode, this_rtx)));
+    riscv_emit_move (temp1,gen_rtx_SIGN_EXTEND (word_mode,gen_rtx_MEM (Pmode, this_rtx)));
       else
     riscv_emit_move (temp1, gen_rtx_MEM (Pmode, this_rtx));
 
@@ -6322,7 +6322,7 @@ riscv_output_mi_thunk (FILE *file, tree thunk_fndecl ATTRIBUTE_UNUSED,
 
       /* Load the offset and add it to THIS_RTX.  */
       if(Pmode != word_mode)
-    riscv_emit_move (temp1,gen_rtx_ZERO_EXTEND (word_mode,gen_rtx_MEM (Pmode, addr)));
+    riscv_emit_move (temp1,gen_rtx_SIGN_EXTEND (word_mode,gen_rtx_MEM (Pmode, addr)));
       else
     riscv_emit_move (temp1, gen_rtx_MEM (Pmode, addr));
 
