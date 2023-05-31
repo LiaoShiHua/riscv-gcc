@@ -6285,14 +6285,14 @@ riscv_output_mi_thunk (FILE *file, tree thunk_fndecl ATTRIBUTE_UNUSED,
   fnaddr = gen_rtx_MEM (FUNCTION_MODE, XEXP (DECL_RTL (function), 0));
 
   /* We need two temporary registers in some cases.  */
-  temp1 = gen_rtx_REG (Pmode, RISCV_PROLOGUE_TEMP_REGNUM);
-  temp2 = gen_rtx_REG (Pmode, STATIC_CHAIN_REGNUM);
+  temp1 = gen_rtx_REG (word_mode, RISCV_PROLOGUE_TEMP_REGNUM);
+  temp2 = gen_rtx_REG (word_mode, STATIC_CHAIN_REGNUM);
 
   /* Find out which register contains the "this" pointer.  */
   if (aggregate_value_p (TREE_TYPE (TREE_TYPE (function)), function))
-    this_rtx = gen_rtx_REG (Pmode, GP_ARG_FIRST + 1);
+    this_rtx = gen_rtx_REG (word_mode, GP_ARG_FIRST + 1);
   else
-    this_rtx = gen_rtx_REG (Pmode, GP_ARG_FIRST);
+    this_rtx = gen_rtx_REG (word_mode, GP_ARG_FIRST);
 
   /* Add DELTA to THIS_RTX.  */
   if (delta != 0)
