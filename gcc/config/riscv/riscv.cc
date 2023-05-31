@@ -1619,7 +1619,7 @@ riscv_add_offset (rtx temp, rtx reg, HOST_WIDE_INT offset)
       high = riscv_force_temporary (temp, high);
       reg = riscv_force_temporary (temp, gen_rtx_PLUS (Pmode, high, reg));
     }
-  return plus_constant (word_mode, reg, offset);
+  return plus_constant (Pmode, reg, offset);
 }
 
 /* The __tls_get_attr symbol.  */
@@ -6318,7 +6318,7 @@ riscv_output_mi_thunk (FILE *file, tree thunk_fndecl ATTRIBUTE_UNUSED,
     riscv_emit_move (temp1, gen_rtx_MEM (Pmode, this_rtx));
 
       /* Set ADDR to a legitimate address for *THIS_RTX + VCALL_OFFSET.  */
-      addr = riscv_add_offset (temp2, temp1, vcall_offset);
+      addr = plus_constant (word_mode, temp1, vcall_offset);
 
       /* Load the offset and add it to THIS_RTX.  */
       if(Pmode != word_mode)
