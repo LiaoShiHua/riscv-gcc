@@ -1766,15 +1766,6 @@
   [(set_attr "type" "arith")
    (set_attr "mode" "<MODE>")])
 
-(define_insn "*lowdisi"
-  [(set (match_operand:DI           0 "register_operand" "=r")
-	(lo_sum:DI (match_operand:DI 1 "register_operand" " r")
-		  (zero_extend:DI (match_operand:SI 2 "symbolic_operand" ""))))]
-  "TARGET_64BIT && TARGET_ILP32"
-  "addi\t%0,%1,%R2"
-  [(set_attr "type" "arith")
-   (set_attr "mode" "DI")])
-
 ;; Allow combine to split complex const_int load sequences, using operand 2
 ;; to store the intermediate results.  See move_operand for details.
 (define_split

@@ -1573,7 +1573,10 @@ riscv_split_symbol (rtx temp, rtx addr, machine_mode mode, rtx *low_out)
 	{
 	  rtx high = gen_rtx_HIGH (Pmode, copy_rtx (addr));
 	  high = riscv_force_temporary (temp, high);
-	  *low_out = gen_rtx_LO_SUM (Pmode, high, addr);
+    if (ptr_mode == SI != word_mode)
+	    *low_out = gen_rtx_LO_SUM (Pmode, high, gen_rtx_ZERO_EXTEND(Pmode,addr));
+    else
+      *low_out = gen_rtx_LO_SUM (Pmode, high, addr);
 	}
 	break;
 
