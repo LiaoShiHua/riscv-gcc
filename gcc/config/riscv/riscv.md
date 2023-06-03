@@ -1767,9 +1767,9 @@
    (set_attr "mode" "<MODE>")])
 
 (define_insn "*lowdi_zero_extend"
-  [(set (match_operand:P           0 "register_operand" "=r")
-	(lo_sum:P (match_operand:P 1 "register_operand" " r")
-		  (zero_extend:DI ((match_operand:P 2 "symbolic_operand" "")))))]
+  [(set (match_operand:DI           0 "register_operand" "=r")
+	(lo_sum:DI (match_operand:DI 1 "register_operand" " r")
+		  (zero_extend:DI ((match_operand:SI 2 "symbolic_operand" "")))))]
   ""
   "addi\t%0,%1,%R2"
   [(set_attr "type" "arith")
