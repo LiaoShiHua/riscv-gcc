@@ -1571,12 +1571,9 @@ riscv_split_symbol (rtx temp, rtx addr, machine_mode mode, rtx *low_out)
       {
       case SYMBOL_ABSOLUTE:
 	{
-	  rtx high = gen_rtx_HIGH (Pmode, copy_rtx (addr));
+	  rtx high = gen_rtx_HIGH (Pmode, copy_rtx (ptr_mode != word_mode ? gen_rtx_ZERO_EXTEND(Pmode,addr) : addr));
 	  high = riscv_force_temporary (temp, high);
-    if (ptr_mode != word_mode)
-	    *low_out = gen_rtx_LO_SUM (Pmode, high, gen_rtx_ZERO_EXTEND(Pmode,addr));
-    else
-      *low_out = gen_rtx_LO_SUM (Pmode, high, addr);
+    *low_out = gen_rtx_LO_SUM (Pmode, high, addr);
 	}
 	break;
 
