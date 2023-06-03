@@ -1501,7 +1501,12 @@ riscv_unspec_offset_high (rtx temp, rtx addr, enum riscv_symbol_type symbol_type
 static rtx riscv_got_load_tls_gd (rtx dest, rtx sym)
 {
   if (Pmode == DImode)
-    return gen_got_load_tls_gddi (dest, sym);
+  {
+    if (ptr_mode == SImode)
+      return gen_got_load_tls_gddisi(dest, sym);
+    else
+      return gen_got_load_tls_gddi (dest, sym);
+  }
   else
     return gen_got_load_tls_gdsi (dest, sym);
 }
@@ -1511,7 +1516,12 @@ static rtx riscv_got_load_tls_gd (rtx dest, rtx sym)
 static rtx riscv_got_load_tls_ie (rtx dest, rtx sym)
 {
   if (Pmode == DImode)
-    return gen_got_load_tls_iedi (dest, sym);
+  {
+    if (ptr_mode == SImode)
+      return gen_got_load_tls_iedisi(dest, sym);
+    else
+      return gen_got_load_tls_iedi (dest, sym);
+  }
   else
     return gen_got_load_tls_iesi (dest, sym);
 }
@@ -1522,7 +1532,12 @@ static rtx riscv_tls_add_tp_le (rtx dest, rtx base, rtx sym)
 {
   rtx tp = gen_rtx_REG (Pmode, THREAD_POINTER_REGNUM);
   if (Pmode == DImode)
-    return gen_tls_add_tp_ledi (dest, base, tp, sym);
+  {
+    if (ptr_mode == SImode)
+      return gen_tls_add_tp_ledisi(dest, base, tp, sym);
+    else
+      return gen_tls_add_tp_ledi (dest, base, tp, sym);
+  }
   else
     return gen_tls_add_tp_lesi (dest, base, tp, sym);
 }
@@ -1583,7 +1598,12 @@ riscv_split_symbol (rtx temp, rtx addr, machine_mode mode, rtx *low_out)
 	    temp = gen_reg_rtx (Pmode);
 
 	  if (Pmode == DImode)
-	    emit_insn (gen_auipcdi (temp, copy_rtx (addr), GEN_INT (seqno)));
+    {
+      if (ptr_mode == SImode)
+        emit_insn (gen_auipcdisi (temp, copy_rtx (addr), GEN_INT (seqno)));
+      else
+	      emit_insn (gen_auipcdi (temp, copy_rtx (addr), GEN_INT (seqno)));
+    }
 	  else
 	    emit_insn (gen_auipcsi (temp, copy_rtx (addr), GEN_INT (seqno)));
 
@@ -6312,13 +6332,18 @@ riscv_output_mi_thunk (FILE *file, tree thunk_fndecl ATTRIBUTE_UNUSED,
       rtx addr;
 
       /* Set TEMP1 to *THIS_RTX.  */
-      riscv_emit_move (temp1, gen_rtx_MEM (Pmode, this_rtx));
+      if (ptr_mode != word_mode)
+    riscv_emit_move (temp1,gen_rtx_ZERO_EXTEND (Pmode,gen_rtx_MEM (ptr_mode, this_rtx)));
+      else
+    riscv_emit_move (temp1, gen_rtx_MEM (Pmode, this_rtx));
 
       /* Set ADDR to a legitimate address for *THIS_RTX + VCALL_OFFSET.  */
-      addr = riscv_add_offset (temp2, temp1, vcall_offset);
-
+      addr = plus_constant (word_mode, temp1, vcall_offset);
       /* Load the offset and add it to THIS_RTX.  */
-      riscv_emit_move (temp1, gen_rtx_MEM (Pmode, addr));
+      if(ptr_mode != word_mode)
+    riscv_emit_move (temp1,gen_rtx_SIGN_EXTEND (Pmode,gen_rtx_MEM (ptr_mode, addr)));
+      else
+    riscv_emit_move (temp1, gen_rtx_MEM (Pmode, addr));
       emit_insn (gen_add3_insn (this_rtx, this_rtx, temp1));
     }
 

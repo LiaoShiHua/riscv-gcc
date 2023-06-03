@@ -1674,6 +1674,19 @@
   [(set_attr "type" "arith")
    (set_attr "mode" "<MODE>")])
 
+(define_insn "tls_add_tp_ledisi"
+  [(set (match_operand:DI      0 "register_operand" "=r")
+	(zero_extend:DI
+    (unspec:SI
+	    [(match_operand:SI 1 "register_operand" "r")
+	     (match_operand:SI 2 "register_operand" "r")
+	     (match_operand:SI 3 "symbolic_operand" "")]
+	    UNSPEC_TLS_LE)))]
+  "TARGET_64BIT && TARGET_ILP32"
+  "add\t%0,%1,%2,%%tprel_add(%3)"
+  [(set_attr "type" "arith")
+   (set_attr "mode" "DI")])
+
 (define_insn "got_load_tls_gd<mode>"
   [(set (match_operand:P      0 "register_operand" "=r")
 	(unspec:P
@@ -1684,15 +1697,36 @@
   [(set_attr "got" "load")
    (set_attr "mode" "<MODE>")])
 
+(define_insn "got_load_tls_gddisi"
+  [(set (match_operand:DI      0 "register_operand" "=r")
+	(zero_extend:DI(unspec:SI
+	    [(match_operand:SI 1 "symbolic_operand" "")]
+	    UNSPEC_TLS_GD)))]
+  "TARGET_64BIT && TARGET_ILP32"
+  "la.tls.gd\t%0,%1"
+  [(set_attr "got" "load")
+   (set_attr "mode" "DI")])
+
 (define_insn "got_load_tls_ie<mode>"
   [(set (match_operand:P      0 "register_operand" "=r")
 	(unspec:P
 	    [(match_operand:P 1 "symbolic_operand" "")]
 	    UNSPEC_TLS_IE))]
-  ""
+  "TARGET_64BIT && TARGET_ILP32"
   "la.tls.ie\t%0,%1"
   [(set_attr "got" "load")
    (set_attr "mode" "<MODE>")])
+
+(define_insn "got_load_tls_iedisi"
+  [(set (match_operand:DI      0 "register_operand" "=r")
+	(zero_extend:DI
+    (unspec:SI
+	      [(match_operand:SI 1 "symbolic_operand" "")]
+	      UNSPEC_TLS_IE)))]
+  "TARGET_64BIT && TARGET_ILP32"
+  "la.tls.ie\t%0,%1"
+  [(set_attr "got" "load")
+   (set_attr "mode" "DI")])
 
 (define_insn "auipc<mode>"
   [(set (match_operand:P           0 "register_operand" "=r")
@@ -1702,6 +1736,19 @@
 		  (pc)]
 	    UNSPEC_AUIPC))]
   ""
+  ".LA%2: auipc\t%0,%h1"
+  [(set_attr "type" "auipc")
+   (set_attr "cannot_copy" "yes")])
+
+(define_insn "auipcdisi"
+  [(set (match_operand:DI           0 "register_operand" "=r")
+	(zero_extend:DI
+    (unspec:SI
+	    [(match_operand:SI      1 "symbolic_operand" "")
+		  (match_operand:SI 2 "const_int_operand")
+		  (pc)]
+	    UNSPEC_AUIPC)))]
+  "TARGET_64BIT && TARGET_ILP32"
   ".LA%2: auipc\t%0,%h1"
   [(set_attr "type" "auipc")
    (set_attr "cannot_copy" "yes")])
@@ -1718,6 +1765,15 @@
   "addi\t%0,%1,%R2"
   [(set_attr "type" "arith")
    (set_attr "mode" "<MODE>")])
+
+(define_insn "*lowdisi"
+  [(set (match_operand:DI           0 "register_operand" "=r")
+	(lo_sum:DI (match_operand:DI 1 "register_operand" " r")
+		  (zero_extend:DI (match_operand:SI 2 "symbolic_operand" ""))))]
+  "TARGET_64BIT && TARGET_ILP32"
+  "addi\t%0,%1,%R2"
+  [(set_attr "type" "arith")
+   (set_attr "mode" "DI")])
 
 ;; Allow combine to split complex const_int load sequences, using operand 2
 ;; to store the intermediate results.  See move_operand for details.

@@ -288,7 +288,7 @@ ASM_MISA_SPEC
 
 /* Pmode is always the same as ptr_mode, but not always the same as word_mode.
    Extensions of pointers to word_mode must be signed.  */
-#define POINTERS_EXTEND_UNSIGNED false
+#define POINTERS_EXTEND_UNSIGNED 1
 
 /* Define if loading short immediate values into registers sign extends.  */
 #define SHORT_IMMEDIATES_SIGN_EXTEND 1
@@ -708,7 +708,7 @@ typedef struct {
 
 #define TRAMPOLINE_CODE_SIZE 16
 #define TRAMPOLINE_SIZE		\
-  ((Pmode == SImode)		\
+  ((ptr_mode == SImode)		\
    ? TRAMPOLINE_CODE_SIZE	\
    : (TRAMPOLINE_CODE_SIZE + POINTER_SIZE * 2))
 #define TRAMPOLINE_ALIGNMENT POINTER_SIZE
@@ -799,7 +799,7 @@ typedef struct {
    After generation of rtl, the compiler makes no further distinction
    between pointers and any other objects of this machine mode.  */
 
-#define Pmode (TARGET_ILP32 ? SImode : DImode)
+#define Pmode word_mode
 
 /* Give call MEMs SImode since it is the "most permissive" mode
    for both 32-bit and 64-bit targets.  */
