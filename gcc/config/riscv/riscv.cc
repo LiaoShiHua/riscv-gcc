@@ -5026,10 +5026,6 @@ riscv_option_override (void)
   if (TARGET_RVE && riscv_abi != ABI_ILP32E)
     error ("rv32e requires ilp32e ABI");
 
-  /* We do not yet support ILP32 on RV64.  */
-  if (BITS_PER_WORD != POINTER_SIZE)
-    error ("ABI requires %<-march=rv%d%>", POINTER_SIZE);
-
   /* Validate -mpreferred-stack-boundary= value.  */
   riscv_stack_boundary = ABI_STACK_BOUNDARY;
   if (riscv_preferred_stack_boundary_arg)
