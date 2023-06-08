@@ -159,6 +159,9 @@ ASM_MISA_SPEC
 #define MIN_UNITS_PER_WORD 4
 #endif
 
+/*Width of a pointer, in bytes */
+#define POINTER_BITS (TARGET_ILP32 ? 4 : 8)
+
 /* Allows SImode op in builtin overflow pattern, see internal-fn.cc.  */
 #undef TARGET_MIN_ARITHMETIC_PRECISION
 #define TARGET_MIN_ARITHMETIC_PRECISION riscv_min_arithmetic_precision

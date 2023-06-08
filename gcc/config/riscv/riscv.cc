@@ -5016,11 +5016,11 @@ riscv_compute_frame_info (void)
 
   if (frame->mask)
     {
-      x_save_size = riscv_stack_align (num_x_saved * UNITS_PER_WORD);
+      x_save_size = riscv_stack_align (num_x_saved * POINTER_BITS);
       unsigned num_save_restore = 1 + riscv_save_libcall_count (frame->mask);
 
       /* Only use save/restore routines if they don't alter the stack size.  */
-      if (riscv_stack_align (num_save_restore * UNITS_PER_WORD) == x_save_size
+      if (riscv_stack_align (num_save_restore * POINTER_BITS) == x_save_size
           && !riscv_avoid_save_libcall ())
 	{
 	  /* Libcall saves/restores 3 registers at once, so we need to
@@ -5045,7 +5045,7 @@ riscv_compute_frame_info (void)
   /* Next are the callee-saved GPRs. */
   if (frame->mask)
     offset += x_save_size;
-  frame->gp_sp_offset = offset - UNITS_PER_WORD;
+  frame->gp_sp_offset = offset - POINTER_BITS;
   /* The hard frame pointer points above the callee-saved GPRs. */
   frame->hard_frame_pointer_offset = offset;
   /* Above the hard frame pointer is the callee-allocated varags save area. */
@@ -5187,7 +5187,7 @@ riscv_next_saved_reg (unsigned int regno, unsigned int limit,
     {
       if (BITSET_P (cfun->machine->frame.mask, regno - GP_REG_FIRST))
 	{
-	  *offset = *offset - UNITS_PER_WORD;
+	  *offset = *offset - POINTER_BITS;
 	  return regno;
 	}
 
@@ -5230,7 +5230,7 @@ riscv_for_each_saved_reg (poly_int64 sp_offset, riscv_save_restore_fn fn,
 
   /* Save the link register and s-registers. */
   offset = (cfun->machine->frame.gp_sp_offset - sp_offset).to_constant ()
-	   + UNITS_PER_WORD;
+	   + POINTER_BITS;
   for (regno = riscv_next_saved_reg (start, limit, &offset, false);
        regno != INVALID_REGNUM;
        regno = riscv_next_saved_reg (regno, limit, &offset))
@@ -5277,7 +5277,7 @@ riscv_for_each_saved_reg (poly_int64 sp_offset, riscv_save_restore_fn fn,
 	    }
 	}
 
-      riscv_save_restore_reg (word_mode, regno, offset, fn);
+      riscv_save_restore_reg (Pmode, regno, offset, fn);
     }
 
   /* This loop must iterate over the same space as its companion in
@@ -5362,13 +5362,13 @@ riscv_adjust_libcall_cfi_prologue ()
       {
 	/* The save order is ra, s0, s1, s2 to s11.  */
 	if (regno == RETURN_ADDR_REGNUM)
-	  offset = saved_size - UNITS_PER_WORD;
+	  offset = saved_size - POINTER_BITS;
 	else if (regno == S0_REGNUM)
-	  offset = saved_size - UNITS_PER_WORD * 2;
+	  offset = saved_size - POINTER_BITS * 2;
 	else if (regno == S1_REGNUM)
-	  offset = saved_size - UNITS_PER_WORD * 3;
+	  offset = saved_size - POINTER_BITS * 3;
 	else
-	  offset = saved_size - ((regno - S2_REGNUM + 4) * UNITS_PER_WORD);
+	  offset = saved_size - ((regno - S2_REGNUM + 4) * POINTER_BITS);
 
 	reg = gen_rtx_REG (Pmode, regno);
 	mem = gen_frame_mem (Pmode, plus_constant (Pmode,
@@ -5774,7 +5774,7 @@ riscv_get_separate_components (void)
 	if (SMALL_OPERAND (offset))
 	  bitmap_set_bit (components, regno);
 
-	offset -= UNITS_PER_WORD;
+	offset -= POINTER_BITS;
       }
 
   offset = cfun->machine->frame.fp_sp_offset.to_constant ();
@@ -5863,7 +5863,7 @@ riscv_process_components (sbitmap components, bool prologue_p)
 	if (bitmap_bit_p (components, regno))
 	  riscv_save_restore_reg (word_mode, regno, offset, fn);
 
-	offset -= UNITS_PER_WORD;
+	offset -= POINTER_BITS;
       }
 
   offset = cfun->machine->frame.fp_sp_offset.to_constant ();
