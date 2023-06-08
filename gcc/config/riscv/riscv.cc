@@ -5861,7 +5861,7 @@ riscv_process_components (sbitmap components, bool prologue_p)
     if (BITSET_P (cfun->machine->frame.mask, regno - GP_REG_FIRST))
       {
 	if (bitmap_bit_p (components, regno))
-	  riscv_save_restore_reg (word_mode, regno, offset, fn);
+	  riscv_save_restore_reg (Pmode, regno, offset, fn);
 
 	offset -= POINTER_BITS;
       }
