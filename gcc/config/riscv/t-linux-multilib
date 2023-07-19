@@ -23,6 +23,8 @@ lp64d
 MULTILIB_REQUIRED = march=rv32imac/mabi=ilp32 \
 march=rv32imafdc/mabi=ilp32d \
 march=rv64imac/mabi=lp64 \
+march=rv64imac/mabi=ilp32 \
+march=rv64imafdc/mabi=ilp32d \
 march=rv64imafdc/mabi=lp64d
 MULTILIB_REUSE = march.rv32imac/mabi.ilp32=march.rv32ima/mabi.ilp32 \
 march.rv32imac/mabi.ilp32=march.rv32imaf/mabi.ilp32 \
@@ -41,6 +43,16 @@ march.rv64imac/mabi.lp64=march.rv64imafc/mabi.lp64 \
 march.rv64imac/mabi.lp64=march.rv64imafdc/mabi.lp64 \
 march.rv64imac/mabi.lp64=march.rv64g/mabi.lp64 \
 march.rv64imac/mabi.lp64=march.rv64gc/mabi.lp64 \
+march.rv64imac/mabi.ilp32=march.rv64ima/mabi.ilp32 \
+march.rv64imac/mabi.ilp32=march.rv64imaf/mabi.ilp32 \
+march.rv64imac/mabi.ilp32=march.rv64imafd/mabi.ilp32 \
+march.rv64imac/mabi.ilp32=march.rv64imafc/mabi.ilp32 \
+march.rv64imac/mabi.ilp32=march.rv64imafdc/mabi.ilp32 \
+march.rv64imac/mabi.ilp32=march.rv64g/mabi.ilp32 \
+march.rv64imac/mabi.ilp32=march.rv64gc/mabi.ilp32 \
+march.rv64imafdc/mabi.ilp32d=march.rv64imafd/mabi.ilp32d \
+march.rv64imafdc/mabi.ilp32d=march.rv64gc/mabi.ilp32d \
+march.rv64imafdc/mabi.ilp32d=march.rv64g/mabi.ilp32d
 march.rv64imafdc/mabi.lp64d=march.rv64imafd/mabi.lp64d \
 march.rv64imafdc/mabi.lp64d=march.rv64gc/mabi.lp64d \
 march.rv64imafdc/mabi.lp64d=march.rv64g/mabi.lp64d
