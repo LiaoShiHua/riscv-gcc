@@ -1,5 +1,5 @@
 /* { dg-do compile } */
-/* { dg-options "-march=rv64gc_xtheadbb -mabi=lp64" } */
+/* { dg-options "-march=rv64gc_xtheadbb -mabi=lp64d" } */
 /* { dg-skip-if "" { *-*-* } {"-O0" "-Os" "-Og" "-Oz" "-flto" } } */
 /* { dg-final { check-function-bodies "**" "" } } */
 
