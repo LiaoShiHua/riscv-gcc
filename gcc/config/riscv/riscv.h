@@ -82,6 +82,10 @@ extern const char *riscv_arch_help (int argc, const char **argv);
 #define TARGET_64BIT           (__riscv_xlen == 64)
 #endif /* IN_LIBGCC2 */
 
+#ifndef TARGET_ILP32
+#define TARGET_ILP32           (riscv_abi <= ABI_ILP32D)
+#endif /*TARGET_ILP32*/
+
 #ifdef HAVE_AS_MISA_SPEC
 #define ASM_MISA_SPEC "%{misa-spec=*}"
 #else
@@ -875,7 +879,7 @@ extern enum riscv_cc get_riscv_cc (const rtx use);
    After generation of rtl, the compiler makes no further distinction
    between pointers and any other objects of this machine mode.  */
 
-#define Pmode word_mode
+#define Pmode (TARGET_ILP32 ? SImode : DImode)
 
 /* Specify the machine mode that registers have.  */
 
@@ -1152,6 +1156,10 @@ extern poly_int64 riscv_v_adjust_bytesize (enum machine_mode, int);
 #define XLEN_SPEC \
   "%{march=rv32*:32}" \
   "%{march=rv64*:64}" \
+
+#define ABI_LEN_SPEC \
+  "%{mabi=ilp32*:32}" \
+  "%{mabi=lp64*:64}" \
 
 #define ABI_SPEC \
   "%{mabi=ilp32:ilp32}" \

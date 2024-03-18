@@ -9033,7 +9033,7 @@ riscv_option_override (void)
     error ("z*inx requires ABI ilp32, ilp32e, lp64 or lp64e");
 
   /* We do not yet support ILP32 on RV64.  */
-  if (BITS_PER_WORD != POINTER_SIZE)
+  if (BITS_PER_WORD != POINTER_SIZE && (!(TARGET_64BIT && TARGET_ILP32)))
     error ("ABI requires %<-march=rv%d%>", POINTER_SIZE);
 
   /* Validate -mpreferred-stack-boundary= value.  */

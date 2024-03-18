@@ -730,7 +730,7 @@
 		 (match_operand:SI 2 "arith_operand"    " r,I")))]
   ""
 {
-  if (TARGET_64BIT)
+  if (TARGET_64BIT && !TARGET_ILP32)
     {
       rtx t = gen_reg_rtx (DImode);
       emit_insn (gen_addsi3_extended (t, operands[1], operands[2]));
@@ -888,7 +888,7 @@
                  (match_operand:SI 2 "register_operand" "  r")))]
   ""
 {
-  if (TARGET_64BIT)
+  if (TARGET_64BIT && !TARGET_ILP32)
     {
       rtx t = gen_reg_rtx (DImode);
       emit_insn (gen_subsi3_extended (t, operands[1], operands[2]));
@@ -1021,7 +1021,7 @@
 	(neg:SI (match_operand:SI 1 "register_operand" " r")))]
   ""
 {
-  if (TARGET_64BIT)
+  if (TARGET_64BIT && !TARGET_ILP32)
     {
       rtx t = gen_reg_rtx (DImode);
       emit_insn (gen_negsi2_extended (t, operands[1]));
@@ -1084,7 +1084,7 @@
                 (match_operand:SI 2 "register_operand" " r")))]
   "TARGET_ZMMUL || TARGET_MUL"
 {
-  if (TARGET_64BIT)
+  if (TARGET_64BIT && !TARGET_ILP32)
     {
       rtx t = gen_reg_rtx (DImode);
       emit_insn (gen_mulsi3_extended (t, operands[1], operands[2]));
@@ -1372,7 +1372,7 @@
                    (match_operand:SI 2 "register_operand" " r")))]
   "TARGET_DIV"
 {
-  if (TARGET_64BIT)
+  if (TARGET_64BIT && !TARGET_ILP32)
     {
       rtx t = gen_reg_rtx (DImode);
       emit_insn (gen_<optab>si3_extended (t, operands[1], operands[2]));
@@ -2501,7 +2501,7 @@
                 (match_operand:QI 2 "arith_operand"    " rI")))]
   ""
 {
-  if (TARGET_64BIT)
+  if (TARGET_64BIT && !TARGET_ILP32)
     {
       rtx t = gen_reg_rtx (DImode);
       emit_insn (gen_<optab>si3_extend (t, operands[1], operands[2]));
@@ -3307,6 +3307,10 @@
   "reload_completed"
   [(const_int 0)]
 {
+  if (GET_MODE (operands[0]) != Pmode)
+    operands[0] = convert_to_mode (Pmode, operands[0], 0);  
+  if (GET_MODE (operands[1]) != Pmode)
+    operands[1] = convert_to_mode (Pmode, operands[1], 0);
   riscv_set_return_address (operands[0], operands[1]);
   DONE;
 })
@@ -3561,8 +3565,8 @@
 
 (define_insn "stack_tie<mode>"
   [(set (mem:BLK (scratch))
-	(unspec:BLK [(match_operand:X 0 "register_operand" "r")
-		     (match_operand:X 1 "register_operand" "r")]
+	(unspec:BLK [(match_operand:P 0 "register_operand" "r")
+		     (match_operand:P 1 "register_operand" "r")]
 		    UNSPEC_TIE))]
   ""
   ""
